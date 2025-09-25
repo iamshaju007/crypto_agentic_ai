@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS historical_data (
+    id SERIAL PRIMARY KEY,
+    symbol VARCHAR(50) NOT NULL,
+    date TIMESTAMP NOT NULL,
+    close FLOAT NOT NULL
+);
