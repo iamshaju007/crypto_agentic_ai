@@ -2,6 +2,16 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Install system dependencies for Python packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip to the latest version
+RUN pip install --upgrade pip
+
 # Copy requirements from root
 COPY requirements.txt .
 
@@ -10,6 +20,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy frontend code
 COPY frontend/ .
+
+# Verify app.py exists (optional, for debugging)
+RUN test -f app.py || (echo "Error: app.py not found" && exit 1)
 
 EXPOSE 8501
 
