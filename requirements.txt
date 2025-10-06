@@ -13,7 +13,7 @@ prophet==1.1.4
 stable-baselines3==2.0.0
 langchain==0.0.303
 llama-index==0.9.48
-crewai==0.164.0  # Upgraded to a version with compatible tokenizers dependency
+crewai==0.175.0  # Use a valid, available version
 
 # Data
 ccxt==4.0.23
@@ -21,7 +21,7 @@ pycoingecko==3.1.0
 web3==6.8.0
 pandas==2.1.0
 numpy==1.25.2
-chromadb>=0.5.23  # Downgraded to avoid opentelemetry conflicts
+chromadb==1.1.0
 
 # Database
 sqlalchemy==2.0.20
