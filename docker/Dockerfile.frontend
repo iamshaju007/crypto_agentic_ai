@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip and install dependencies (CPU-only PyTorch and other requirements)
-COPY frontend/requirements.txt .
+COPY requirements.txt .
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --root-user-action=ignore --upgrade pip setuptools wheel \
     && pip install --root-user-action=ignore --no-cache-dir torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu \
