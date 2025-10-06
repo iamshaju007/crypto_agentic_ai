@@ -21,7 +21,7 @@ pycoingecko==3.1.0
 web3==6.8.0
 pandas==2.1.0
 numpy==1.25.2
-chromadb==0.4.24  # Downgraded to avoid opentelemetry conflicts
+chromadb>=0.5.23  # Downgraded to avoid opentelemetry conflicts
 
 # Database
 sqlalchemy==2.0.20
