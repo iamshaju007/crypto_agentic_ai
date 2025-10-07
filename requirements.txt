@@ -13,7 +13,7 @@ prophet==1.1.4
 stable-baselines3==2.0.0
 langchain==0.2.16
 llama-index==0.9.48
-crewai==0.41.2
+crewai==0.41.1
 
 # Data
 ccxt==4.0.23
