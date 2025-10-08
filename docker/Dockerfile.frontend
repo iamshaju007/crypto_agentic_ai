@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-FROM python:3.11-bullseye
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     libfreetype6-dev \
     libpng-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip and install dependencies (CPU-only PyTorch and other requirements)
@@ -33,6 +34,8 @@ RUN test -f app.py || (echo "Error: app.py not found" && exit 1)
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
+# Expose port for Streamlit
 EXPOSE 8501
 
+# Run Streamlit
 CMD ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
