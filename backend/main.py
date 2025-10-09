@@ -1,9 +1,9 @@
 from fastapi import FastAPI
-from api.crypto import router as crypto_router
-from api.predictions import router as predictions_router
-from api.agents import router as agents_router
-from utils.logger import logger
-from db.database import init_db
+from backend.api.crypto import router as crypto_router
+from backend.api.predictions import router as predictions_router
+from backend.api.agents import router as agents_router
+from backend.utils.logger import logger
+from backend.db.database import init_db
 
 app = FastAPI(title="Crypto AI API")
 
