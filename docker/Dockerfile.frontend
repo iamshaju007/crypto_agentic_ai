@@ -12,12 +12,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and install Python dependencies (CPU-only)
+# Copy requirements
 COPY requirements.txt .
+
+# Install dependencies (CPU-only for torch, PyPI for others)
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --root-user-action=ignore --upgrade pip setuptools wheel \
     && pip install --root-user-action=ignore --no-cache-dir torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu \
-    && pip install --root-user-action=ignore --no-cache-dir -r requirements.txt --index-url https://download.pytorch.org/whl/cpu
+    && pip install --root-user-action=ignore --no-cache-dir -r requirements.txt
 
 # Copy frontend application
 COPY frontend/ .
