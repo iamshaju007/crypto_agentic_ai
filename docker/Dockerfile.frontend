@@ -27,7 +27,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY frontend/ .
 
 # --- Verify app.py exists to avoid silent build issues ---
-RUN test -f app.py || (echo "❌ Error: app.py not found in /app/frontend" && exit 1)
+RUN test -f frontend/app.py || (echo "❌ Error: app.py not found in /app/frontend" && exit 1)
 
 # --- Create non-root user for security ---
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
