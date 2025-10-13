@@ -2,39 +2,35 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# --- Install system dependencies required for building Python packages ---
+# Install minimal system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
-    g++ \
-    gfortran \
-    libgomp1 \
-    libopenblas-dev \ 
     pkg-config \
     libfreetype6-dev \
     libpng-dev \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# --- Upgrade pip and install Python dependencies (CPU-only PyTorch + requirements) ---
+# Upgrade pip and install Python dependencies (CPU-only)
 COPY requirements.txt .
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --root-user-action=ignore --upgrade pip setuptools wheel \
     && pip install --root-user-action=ignore --no-cache-dir torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu \
-    && pip install --root-user-action=ignore --no-cache-dir -r requirements.txt
+    && pip install --root-user-action=ignore --no-cache-dir -r requirements.txt --index-url https://download.pytorch.org/whl/cpu
 
-# --- Copy frontend application ---
+# Copy frontend application
 COPY frontend/ .
 
-# --- Verify app.py exists to avoid silent build issues ---
-RUN test -f frontend/app.py || (echo "❌ Error: app.py not found in /app/frontend" && exit 1)
+# Verify app.py exists
+RUN test -f app.py || (echo "❌ Error: app.py not found in /app" && exit 1)
 
-# --- Create non-root user for security ---
+# Create non-root user
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
-# --- Expose Streamlit default port ---
+# Expose Streamlit port
 EXPOSE 8501
 
-# --- Launch Streamlit App ---
+# Launch Streamlit
 CMD ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
