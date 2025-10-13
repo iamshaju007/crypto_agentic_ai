@@ -20,10 +20,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements for caching
+# Copy requirements
 COPY requirements.txt .
 
-# Install dependencies (CPU-only for torch, PyPI for others)
+# Install backend-relevant dependencies
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --upgrade pip setuptools wheel \
     && pip install --no-cache-dir torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu \

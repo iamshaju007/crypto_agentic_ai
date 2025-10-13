@@ -15,11 +15,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy requirements
 COPY requirements.txt .
 
-# Install dependencies (CPU-only for torch, PyPI for others)
+# Install only frontend-relevant dependencies
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --root-user-action=ignore --upgrade pip setuptools wheel \
     && pip install --root-user-action=ignore --no-cache-dir torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu \
-    && pip install --root-user-action=ignore --no-cache-dir -r requirements.txt
+    && pip install --root-user-action=ignore --no-cache-dir \
+        streamlit==1.26.0 \
+        pandas==2.1.0 \
+        numpy==1.25.2 \
+        python-dotenv==1.0.0 \
+        requests==2.31.0 \
+        ccxt==4.0.23 \
+        pycoingecko==3.1.0
 
 # Copy frontend application
 COPY frontend/ .
