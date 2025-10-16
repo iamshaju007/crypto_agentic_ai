@@ -4,6 +4,9 @@ from backend.api.predictions import router as predictions_router
 from backend.api.agents import router as agents_router
 from backend.utils.logger import logger
 from backend.db.database import init_db
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 
 app = FastAPI(title="Crypto AI API")
 
