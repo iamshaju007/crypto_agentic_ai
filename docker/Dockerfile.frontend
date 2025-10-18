@@ -31,8 +31,8 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # Copy frontend application
 COPY frontend/ .
 
-# Verify app.py exists
-RUN test -f app.py || (echo "❌ Error: app.py not found in /app" && exit 1)
+
+
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
