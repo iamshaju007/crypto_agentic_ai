@@ -13,6 +13,7 @@ from pycoingecko import CoinGeckoAPI
 
 # --- Local Imports ---
 from utils.config import get_config
+import requests
 
 
 class CoinGeckoService:
@@ -22,21 +23,24 @@ class CoinGeckoService:
     """
 
     def __init__(self):
+        """Initialize the CoinGecko API client and load configuration."""
         self.client = CoinGeckoAPI()
         self.config = get_config()
 
     def get_crypto_list(self):
         """
         Fetch a list of all available cryptocurrencies from CoinGecko.
-        :return: List of coin dictionaries
+        
+        Returns:
+            list: List of coin dictionaries
         """
         try:
-            coin_list = self.client.get_coins_list()
-            return coin_list
+            coins = self.client.get_coins_list()  # renamed to 'coins' to avoid shadowing
+            return coins
         except RuntimeError as e:
             print(f"❌ Runtime error fetching crypto list: {e}")
             return []
-        except Exception as e:  # fallback for unexpected errors
+        except Exception as e:
             print(f"❌ Unexpected error fetching crypto list: {e}")
             return []
 
@@ -44,10 +48,13 @@ class CoinGeckoService:
         """
         Fetch historical price data for a given crypto symbol between two dates.
 
-        :param symbol: The cryptocurrency symbol (e.g., 'bitcoin')
-        :param start_date: Start date in 'YYYY-MM-DD' format
-        :param end_date: End date in 'YYYY-MM-DD' format
-        :return: List of dicts containing 'date' and 'price'
+        Args:
+            symbol (str): The cryptocurrency symbol (e.g., 'bitcoin')
+            start_date (str): Start date in 'YYYY-MM-DD' format
+            end_date (str): End date in 'YYYY-MM-DD' format
+
+        Returns:
+            list: List of dicts containing 'date' and 'price'
         """
         try:
             # Convert dates to UNIX timestamps
@@ -76,16 +83,16 @@ class CoinGeckoService:
         except RuntimeError as e:
             print(f"❌ Runtime error fetching historical data for {symbol}: {e}")
             return []
-        except Exception as e:
-            print(f"❌ Unexpected error fetching historical data for {symbol}: {e}")
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Network/request error fetching historical data for {symbol}: {e}")
             return []
 
 
 # --- Quick Test (Remove in Production) ---
 if __name__ == "__main__":
     service = CoinGeckoService()
-    coin_list = service.get_crypto_list()
-    print(f"✅ Total coins fetched: {len(coin_list)}")
+    coins_list = service.get_crypto_list()  # renamed variable to avoid shadowing
+    print(f"✅ Total coins fetched: {len(coins_list)}")
 
     sample_data = service.get_historical_data("bitcoin", "2023-01-01", "2023-01-10")
     print(f"📊 Sample historical data: {sample_data[:3]}")

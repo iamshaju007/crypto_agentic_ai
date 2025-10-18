@@ -1,7 +1,6 @@
-from typing import List  # Standard library imports should come first
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-
+from backend.db.database import get_db
 from backend.services.coingecko_service import CoinGeckoService
 from backend.db.crud import save_historical_data, get_historical_data
 
@@ -38,6 +37,8 @@ async def get_historical(symbol: str, start_date: str, end_date: str):
     Fetch historical price data for a given crypto symbol and date range.
     Caches the data in the database if not already stored.
     """
+    
+    db = next(get_db())
     try:
         data = get_historical_data(symbol, start_date, end_date)
 
@@ -47,7 +48,7 @@ async def get_historical(symbol: str, start_date: str, end_date: str):
 
             if data:
                 # Ensure this function signature matches your CRUD implementation
-                save_historical_data(symbol, data)
+                await save_historical_data(symbol, data, db)
 
         return data
 
