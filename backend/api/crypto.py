@@ -1,18 +1,9 @@
-"""
-Crypto API Endpoints.
-
-Provides routes to fetch cryptocurrency lists and historical data using
-the CoinGecko API, and stores results in the local database asynchronously.
-"""
-
-# --- Standard Library Imports ---
+from typing import List  # Standard library imports should come first
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-# --- Local Imports ---
 from backend.services.coingecko_service import CoinGeckoService
 from backend.db.crud import save_historical_data, get_historical_data
-from backend.db.database import async_session  # Ensure you have AsyncSession setup
 
 router = APIRouter()
 
@@ -38,7 +29,7 @@ async def list_cryptos():
         raise HTTPException(
             status_code=500,
             detail=f"Error fetching crypto list: {str(e)}"
-        ) from e
+        ) from e  # Added `from e` for clearer traceback
 
 
 @router.get("/historical")
@@ -48,19 +39,17 @@ async def get_historical(symbol: str, start_date: str, end_date: str):
     Caches the data in the database if not already stored.
     """
     try:
-        async with async_session() as db:
-            # Fetch from DB first
-            data = await get_historical_data(symbol, start_date, end_date, db=db)
+        data = get_historical_data(symbol, start_date, end_date)
 
-            if not data:
-                service = CoinGeckoService()
-                data = service.get_historical_data(symbol, start_date, end_date)
+        if not data:
+            service = CoinGeckoService()
+            data = service.get_historical_data(symbol, start_date, end_date)
 
-                if data:
-                    # Save asynchronously in DB
-                    await save_historical_data(symbol, data, db=db)
+            if data:
+                # Ensure this function signature matches your CRUD implementation
+                save_historical_data(symbol, data)
 
-            return data
+        return data
 
     except ValueError as e:
         raise HTTPException(
